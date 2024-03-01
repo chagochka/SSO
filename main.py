@@ -26,7 +26,6 @@ app.config['SECRET_KEY'] = 'yandex_lyceum_secret_key'
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=365)
 api = Api(app)
 
-# Инициализация менеджера логинов
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -43,7 +42,6 @@ def load_user(user_id):
 def index():
 	"""Корневая страница"""
 	db = db_session.create_session()
-	# Делаем рендеринг данных на шаблон:
 	return render_template('index.html')
 
 
@@ -83,18 +81,11 @@ def reqister():
 @app.route('/session_count_1')
 def session_count_1():
 	"""Счётчик посещений страницы (способ cookie)"""
-	# Делаем запрос о количестве посещений.
 	visits = request.cookies.get('visits_count', type=int)
 	if visits:
-		# Если пользователь уже посещал страницу, то выводим сообщение:
 		response = make_response(f'Количество посещений этой страницы: {visits + 1}')
-		# Плюсуем количество посещений и обновляем срок жизни куки.
-		# max_age - это время жизни куки в секундах, после которого браузер удалит их:
 		response.set_cookie('visits_count', str(visits + 1), max_age=60 * 60 * 24 * 365 * 3)
-	# Для ручного удаления куки достаточно установить параметр max_age=0, например:
-	# response.set_cookie('visits_count', '1', max_age=0)
 	else:
-		# Пользователь никогда не посещал страницу или же был более трёх лет назад:
 		response = make_response('Здравствуйте! Вы пришли на эту страницу в первый раз, '
 		                         'или же заходили так давно, что мы о вас почти забыли;)')
 		response.set_cookie('visits_count', '1', max_age=60 * 60 * 24 * 365 * 3)
@@ -105,14 +96,11 @@ def session_count_1():
 @app.route('/session_count_2')
 def session_count_2():
 	"""Счётчик посещений страницы (способ session)"""
-	# Смотрим ключ 'visits_count' в объекте session:
 	if 'visits_count' in session:
-		# Если мы уже посещали страницу, то увеличиваем счётчик:
 		session['visits_count'] = session.get('visits_count') + 1
 		visits = session['visits_count']
 		response = make_response(f'Количество посещений этой страницы: {visits}')
 	else:
-		# Если мы на странице в первый раз, то начинаем счёт:
 		session['visits_count'] = 1
 		response = make_response('Здравствуйте! Вы пришли на эту страницу в первый раз, '
 		                         'или же заходили так давно, что мы о вас почти забыли;)')
@@ -152,8 +140,5 @@ def logout():
 
 
 if __name__ == '__main__':
-	# Создаём сессию для работы с базой данных:
 	db_session.global_init('db/db.sqlite')
-	# Добавляем ресурсы:
-	# Запускаем веб-приложение:
 	app.run(host='localhost')
