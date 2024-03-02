@@ -65,6 +65,7 @@ def reqister():
 		user = User()
 		user.name = regform.name.data
 		user.email = regform.email.data
+		user.status = regform.status.data
 		user.about = regform.about.data
 		user.set_password(regform.password.data)
 		db.add(user)
