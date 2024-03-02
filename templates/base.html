@@ -4,14 +4,15 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+		<script src="https://kit.fontawesome.com/c860e860c2.js" crossorigin="anonymous"></script>
 		<title>{{title}}</title>
 	</head>
 	<body>
 		<header>
 			<nav class="navbar navbar-light bg-light">
-				<a class="navbar-brand" href="#">Меню</a>
+				<a class="navbar-brand" href="#"><i class="fa-solid fa-house"></i>  Главная</a>
 				{% if current_user.is_authenticated %}
-					<a class="navbar-brand" href="/logout">{{current_user.name}} | {{current_user.status}}</a>
+					<div class="navbar-brand">{{current_user.name}} | {{current_user.status}}   <a href="/logout" class="text-decoration-none text-reset"><i class="fa-solid fa-right-from-bracket"></i></a></div>
 				{% else %}
 					<p>
 						<a class="btn btn-primary " href="/register">Зарегистрироваться</a>
@@ -20,10 +21,10 @@
 				{% endif %}				
 			</nav>
 		</header>
-        
+
 		<!-- Контейнер для вставки содержимого дочерних блоков -->
 		<main role="main" class="container">
-			{% block content %}{% endblock %} <!-- Место, куда будет вставляться содержимое дочерних блоков -->
+			{% block content %}{% endblock %}
 		</main>
 		
 	</body>
