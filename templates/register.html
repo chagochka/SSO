@@ -6,6 +6,7 @@
 		{{form.hidden_tag()}}
 		{{form.csrf_token}}
 		<p>
+			<i class="fa-solid fa-envelope"></i>
 			{{form.email.label}}<br>
 			{{form.email(class="form-control", type="email")}}<br>
 			{% for error in form.email.errors %}
@@ -13,6 +14,7 @@
 			{% endfor %}
 		</p>
 		<p>
+			<i class="fa-solid fa-key"></i>
 			{{form.password.label}}<br>
 			{{form.password(class="form-control", type="password")}}<br>
 			{% for error in form.password.errors %}
@@ -20,6 +22,7 @@
 			{% endfor %}
 		</p>
 		<p>
+			<i class="fa-solid fa-key"></i>
 			{{form.password_again.label}}<br>
 			{{form.password_again(class="form-control", type="password")}}<br>
 			{% for error in form.password_again.errors %}
@@ -27,6 +30,7 @@
 			{% endfor %}
 		</p>
 		<p>
+			<i class="fa-solid fa-user"></i>
 			{{form.name.label}}<br>
 			{{form.name(class="form-control")}}<br>
 			{% for error in form.name.errors %}
@@ -34,6 +38,15 @@
 			{% endfor %}
 		</p>
 		<p>
+			<i class="fa-solid fa-graduation-cap"></i>
+			{{form.status.label}}<br>
+        	{{form.status(class="form-control")}}<br>
+        	{% for error in form.status.errors %}
+        	    <p class="alert alert-danger" role="alert">{{error}}</p>
+        	{% endfor %}
+        </p>
+		<p>
+			<i class="fa-solid fa-address-card"></i>
 			{{form.about.label}}<br>
 			{{form.about(class="form-control")}}<br>
 			{% for error in form.about.errors %}
