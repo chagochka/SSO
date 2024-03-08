@@ -10,8 +10,11 @@
 	<body>
 		<header>
 			<nav class="navbar navbar-light bg-light">
-				<a class="navbar-brand" href="#"><i class="fa-solid fa-house"></i>  Главная</a>
+				<a class="navbar-brand" href="/"><i class="fa-solid fa-house"></i>  Главная</a>
 				{% if current_user.is_authenticated %}
+					{% if current_user.status == "admin"%}
+						<a class="btn btn-warning" href="/admin/dashboard"><i class="fa-solid fa-user-shield"></i> Панель администратора</a>
+					{% endif %}
 					<div class="navbar-brand">{{current_user.name}} | {{current_user.status}}   <a href="/logout" class="text-decoration-none text-reset"><i class="fa-solid fa-right-from-bracket"></i></a></div>
 				{% else %}
 					<p>
