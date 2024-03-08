@@ -5,7 +5,8 @@ from flask import (
 	render_template,
 	request,
 	make_response,
-	session
+	session,
+	jsonify
 )
 from flask_login import (
 	LoginManager,
@@ -16,7 +17,7 @@ from flask_login import (
 from flask_restful import Api
 from werkzeug.utils import redirect
 
-from data import db_session
+from data import db_session, admin_api
 from data.login import LoginForm
 from data.register import RegisterForm
 from data.users import User
@@ -28,6 +29,16 @@ api = Api(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+@app.errorhandler(404)
+def not_found(error):
+	return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@app.errorhandler(400)
+def bad_request(_):
+	return make_response(jsonify({'error': 'Bad Request'}), 400)
 
 
 @login_manager.user_loader
@@ -65,7 +76,7 @@ def reqister():
 		user = User()
 		user.name = regform.name.data
 		user.email = regform.email.data
-		user.status = regform.status.data
+		user.status = 'Учащийся'
 		user.about = regform.about.data
 		user.set_password(regform.password.data)
 		db.add(user)
@@ -142,4 +153,15 @@ def logout():
 
 if __name__ == '__main__':
 	db_session.global_init('db/db.sqlite')
+	db = db_session.create_session()
+	if not list(db.query(User).filter(User.status == 'admin')):
+		admin = User()
+		admin.name = input('Введите своё имя: ')
+		admin.email = input('Введите свою почту: ')
+		admin.status = 'admin'
+		admin.about = 'regform.about.data'
+		admin.set_password(input('Установите пароль: '))
+		db.add(admin)
+		db.commit()
+	app.register_blueprint(admin_api.blueprint)
 	app.run(host='localhost')
