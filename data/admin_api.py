@@ -1,8 +1,7 @@
 from functools import wraps
 
-from flask import jsonify, make_response, Blueprint, current_app, render_template
+from flask import jsonify, make_response, Blueprint, current_app, render_template, request
 from flask_login import login_required, current_user
-from requests import get
 
 from . import db_session
 from .users import User
@@ -12,6 +11,12 @@ blueprint = Blueprint(
 	__name__,
 	template_folder='templates'
 )
+
+
+def get_users():
+	db_sess = db_session.create_session()
+	users = db_sess.query(User).filter(User.status == 'Учащийся')
+	return [user.to_dict() for user in users]
 
 
 def admin_required(f):
@@ -30,21 +35,16 @@ def admin_required(f):
 @blueprint.route('/admin/dashboard')
 @admin_required
 def dashboard():
-	db_sess = db_session.create_session()
-	users = db_sess.query(User).filter(User.status == 'Учащийся')
-	users_list = [user.to_dict() for user in users]
-	return render_template('admin_dashboard.html', users=users_list)
+	return render_template('admin_dashboard.html', users=get_users())
 
 
 @blueprint.route('/admin/users')
 @admin_required
-def get_users():
-	db_sess = db_session.create_session()
-	users = db_sess.query(User).filter(User.status == 'Учащийся')
+def get_users_request():
 	return jsonify(
 		{
 			'users':
-				[item.to_dict() for item in users]
+				get_users()
 		}
 	)
 
@@ -61,20 +61,3 @@ def get_one_user(user_id):
 			'user': user.to_dict()
 		}
 	)
-
-
-@blueprint.route('/admin/search_user', methods=['POST'])
-@login_required
-def search_user():
-    # username = request.form['username']
-    # # Здесь должна быть логика поиска пользователя по имени
-    # # Например, получение пользователя из базы данных по имени
-    # user = User.query.filter_by(username=username).first()
-    # if user:
-    #     # Обработка результатов поиска, например, перенаправление на страницу пользователя
-    #     return redirect(url_for('user_profile', user_id=user.id))
-    # else:
-    #     # Обработка случая, когда пользователь не найден
-    #     return "Пользователь не найден", 404
-    pass
-

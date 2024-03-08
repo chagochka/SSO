@@ -1,30 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Поиск пользователя</h2>
-    <form action="{{ url_for('admin_api.search_user') }}" method="post">
-        <div class="form-group">
-            <label for="username">Имя пользователя:</label>
-            <input type="text" class="form-control" id="username" name="username" placeholder="Введите имя пользователя">
+<script>
+$(document).ready(function(){
+ $("#username").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#usersTable tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+ });
+});
+</script>
+<div class="container mt-3">
+    <div class="row">
+        <!-- Блок поиска пользователя слева -->
+        <div class="col-md-4">
+            <h2>Поиск пользователя</h2>
+            <div class="form-group">
+                <label for="username">Фильтр:</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Введите имя или почту">
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Поиск</button>
-    </form>
-
-    <h2>Список пользователей</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Имя пользователя</th>
-                <th>Статус</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-                <tr>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.status }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <!-- Таблица с пользователями справа -->
+        <div class="col-md-8">
+            <h2>Список пользователей</h2>
+            <table class="table" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>Имя пользователя</th>
+                        <th>Почта</th>
+                        <!-- Добавьте здесь другие столбцы по вашему усмотрению -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.email }}</td>
+                            <!-- Добавьте здесь другие данные пользователя -->
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}
