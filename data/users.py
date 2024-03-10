@@ -5,11 +5,11 @@ import datetime
 import sqlalchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy_serializer import SerializerMixin
+
 from .db_session import SqlAlchemyBase
 
 
-class User(SqlAlchemyBase, UserMixin, SerializerMixin):
+class User(SqlAlchemyBase, UserMixin):
 	"""Работа с информацией о пользователях"""
 
 	__tablename__ = 'users'
@@ -32,3 +32,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
 	def check_password(self, password):
 		"""Проверка пароля"""
 		return check_password_hash(self.hashed_password, password)
+
+	def to_dict(self):
+		"""Преобразование объекта User в словарь"""
+		return {c.name: getattr(self, c.name) for c in self.__table__.columns if not c.name.startswith('_')}
