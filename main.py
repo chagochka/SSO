@@ -159,7 +159,7 @@ if __name__ == '__main__':
 		admin.name = input('Введите своё имя: ')
 		admin.email = input('Введите свою почту: ')
 		admin.status = 'admin'
-		admin.about = 'regform.about.data'
+		admin.about = 'admin'
 		admin.set_password(input('Установите пароль: '))
 		db.add(admin)
 		db.commit()
