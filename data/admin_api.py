@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import jsonify, make_response, Blueprint, current_app, render_template, request
+from flask import jsonify, make_response, Blueprint, current_app, render_template
 from flask_login import login_required, current_user
 
 from . import db_session

@@ -21,6 +21,7 @@ from data import db_session, admin_api
 from data.login import LoginForm
 from data.register import RegisterForm
 from data.users import User
+from data.report_resourses import ReportResource, ReportsList
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandex_lyceum_secret_key'
@@ -164,4 +165,6 @@ if __name__ == '__main__':
 		db.add(admin)
 		db.commit()
 	app.register_blueprint(admin_api.blueprint)
+	api.add_resource(ReportsList, '/api/reports')
+	api.add_resource(ReportResource, '/api/reports/<int:reports_id>')
 	app.run(host='localhost')

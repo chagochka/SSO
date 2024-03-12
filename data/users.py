@@ -3,9 +3,10 @@
 import datetime
 
 import sqlalchemy
+from sqlalchemy import orm
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from .reports import Report
 from .db_session import SqlAlchemyBase
 
 
@@ -22,7 +23,7 @@ class User(SqlAlchemyBase, UserMixin):
 	hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 	created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
 
-	# news = orm.relationship('News')
+	reports = orm.relationship('Report')
 	# Эта строка понадобится для свяи со строкой из др. файла ...py --> user = orm.relation('User')
 
 	def set_password(self, password):
