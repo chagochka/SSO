@@ -4,9 +4,8 @@ from . import db_session
 from .reports import Report
 
 
-# Эту функцию логичнее перенести из miniblog.py сюда:
 def not_found(report_id):
-    """Проверка существования новости в базе данных"""
+    """Проверка существования отчёта в базе данных"""
     db = db_session.create_session()
     report = db.query(Report).get(report_id)
     if not report:
@@ -14,17 +13,11 @@ def not_found(report_id):
 
 
 class ReportResource(Resource):
-    """Класс для работы с одной новостью"""
+    """Класс для работы с одним отчётом"""
 
-    # Некоторые методы классов не используют self для своей работы.
-    # В этом случае PyCharm выдаёт ошибку серого цвета:
-    # Method 'get' may be 'static' (Метод get может быть статическим)
-
-    # В таком случае рекомендуется объявить метод статическим -
-    # это экономит оперативную память.
     @staticmethod
     def get(report_id):
-        """Смотрит одну новость из базы"""
+        """Смотрит один отчёт из базы"""
         not_found(report_id)
         db = db_session.create_session()
         report = db.query(Report).get(report_id)
@@ -37,7 +30,7 @@ class ReportResource(Resource):
 
     @staticmethod
     def delete(report_id):
-        """Удаляет одну новость из базы"""
+        """Удаляет один отчёт из базы"""
         not_found(report_id)
         db = db_session.create_session()
         report = db.query(Report).get(report_id)
@@ -47,11 +40,11 @@ class ReportResource(Resource):
 
 
 class ReportsList(Resource):
-    """Класс для работы со списком новостей"""
+    """Класс для работы со списком отчётов"""
 
     @staticmethod
     def get():
-        """Смотрит список новостей в базе"""
+        """Смотрит список отчётов в базе"""
         db = db_session.create_session()
         report = db.query(Report).all()
         return jsonify(
@@ -62,7 +55,7 @@ class ReportsList(Resource):
 
     @staticmethod
     def post():
-        """Добавляет новость в список новостей"""
+        """Добавляет новость в список отчётов"""
         db = db_session.create_session()
         report = Report()
         db.add(report)
