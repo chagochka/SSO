@@ -24,7 +24,6 @@ class User(SqlAlchemyBase, UserMixin):
 	created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
 
 	reports = orm.relationship('Report')
-	# Эта строка понадобится для свяи со строкой из др. файла ...py --> user = orm.relation('User')
 
 	def set_password(self, password):
 		"""Создание хеша пароля"""
