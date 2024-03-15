@@ -17,7 +17,7 @@ from flask_login import (
 from flask_restful import Api
 from werkzeug.utils import redirect
 
-from data import db_session, admin_api
+from data import db_session, admin_api, user_api
 from data.login import LoginForm
 from data.register import RegisterForm
 from data.users import User
@@ -164,4 +164,5 @@ if __name__ == '__main__':
 		db.add(admin)
 		db.commit()
 	app.register_blueprint(admin_api.blueprint)
+	app.register_blueprint(user_api.blueprint)
 	app.run(host='localhost')

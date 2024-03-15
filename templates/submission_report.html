@@ -1,173 +1,20 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <title>HTML Document Template</title>
-  <style>
-    p {
-      font-family: Arial;
-    }
-  </style>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
+    {% if current_user.is_authenticated %}
       <div class="playable-buttons">
         <input id="reset" type="button" value="Сбросить" />
         <input id="save" type="button" value="Сохранить" />
         <input id="send" type="button" value="Отправить" />
       </div>
-      <p><form>
+      <p>
+      <form>
         <label>Ссылка:</label>
         <input type="text" id="link1">
         <input type="file" id="screenshot1" name="avatar" accept="image/png, image/jpeg" />
       </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link2">
-        <input type="file" id="screenshot2" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link3">
-        <input type="file" id="screenshot3" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link4">
-        <input type="file" id="screenshot4" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link5">
-        <input type="file" id="screenshot5" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link6">
-        <input type="file" id="screenshot6" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link7">
-        <input type="file" id="screenshot7" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link8">
-        <input type="file" id="screenshot8" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link9">
-        <input type="file" id="screenshot9" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link10">
-        <input type="file" id="screenshot10" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link11">
-        <input type="file" id="screenshot11" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link12">
-        <input type="file" id="screenshot12" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link13">
-        <input type="file" id="screenshot13" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link14">
-        <input type="file" id="screenshot14" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link15">
-        <input type="file" id="screenshot15" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link16">
-        <input type="file" id="screenshot16" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link17">
-        <input type="file" id="screenshot17" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link18">
-        <input type="file" id="screenshot18" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link19">
-        <input type="file" id="screenshot19" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link20">
-        <input type="file" id="screenshot20" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link21">
-        <input type="file" id="screenshot21" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link22">
-        <input type="file" id="screenshot22" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link23">
-        <input type="file" id="screenshot23" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link24">
-        <input type="file" id="screenshot24" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link25">
-        <input type="file" id="screenshot25" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link26">
-        <input type="file" id="screenshot26" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link27">
-        <input type="file" id="screenshot27" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link28">
-        <input type="file" id="screenshot28" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link29">
-        <input type="file" id="screenshot29" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-      <p><form>
-        <label>Ссылка:</label>
-        <input type="text" id="link30">
-        <input type="file" id="screenshot30" name="avatar" accept="image/png, image/jpeg" />
-      </form>
-
-
   <script>
     console.log(document.querySelector('p').textContent);
   </script>
-</body>
-</html>
+    {% endif %}
+{% endblock %}

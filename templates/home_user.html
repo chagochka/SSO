@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if current_user.is_authenticated %}
+      <a href="http://localhost:5000/home/submit">Дополнить отчёт</a>
+    {% endif %}
+{% endblock %}
