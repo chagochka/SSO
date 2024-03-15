@@ -46,7 +46,7 @@ def bad_request(_):
 def load_user(user_id):
 	"""Загрузка пользователя"""
 	db = db_session.create_session()
-	return db.query(User).get(user_id)
+	return db.get(User, user_id)
 
 
 @app.route('/')

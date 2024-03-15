@@ -19,7 +19,7 @@ class Report(SqlAlchemyBase, UserMixin):
     path = sqlalchemy.Column(sqlalchemy.Text)
     date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
 
-    users = orm.relationship('User')
+    users = orm.relationship('User', back_populates="reports")
 
     def to_dict(self):
         """Преобразование объекта User в словарь"""

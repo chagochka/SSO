@@ -1,10 +1,11 @@
 from functools import wraps
 
-from flask import jsonify, make_response, Blueprint, current_app, render_template
+from flask import jsonify, make_response, Blueprint, current_app, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 
 from . import db_session
 from .users import User
+from .add_user import AddForm
 
 blueprint = Blueprint(
 	'admin_api',
@@ -61,3 +62,20 @@ def get_one_user(user_id):
 			'user': user.to_dict()
 		}
 	)
+
+
+@blueprint.route('/admin/add_user', methods=['GET', 'POST'])
+@admin_required
+def add_user():
+	form = AddForm()
+	print(form.validate_on_submit())
+	if form.validate_on_submit():
+		db_sess = db_session.create_session()
+		name = request.form.get('name')
+		user = User()
+		user.name = name
+		db_sess.add(user)
+		db_sess.commit()
+		return redirect('/admin/dashboard')
+
+	return render_template('add_user.html', form=form)
