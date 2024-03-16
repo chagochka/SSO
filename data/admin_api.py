@@ -5,7 +5,6 @@ from flask_login import login_required, current_user
 
 from . import db_session
 from .users import User
-from .add_user import AddForm
 
 blueprint = Blueprint(
 	'admin_api',
@@ -67,10 +66,9 @@ def get_one_user(user_id):
 @blueprint.route('/admin/add_user', methods=['GET', 'POST'])
 @admin_required
 def add_user():
-	form = AddForm()
-	print(form.validate_on_submit())
-	if form.validate_on_submit():
-		db_sess = db_session.create_session()
+	db_sess = db_session.create_session()
+	print(request.method)
+	if request.method == 'POST':
 		name = request.form.get('name')
 		user = User()
 		user.name = name
@@ -78,4 +76,4 @@ def add_user():
 		db_sess.commit()
 		return redirect('/admin/dashboard')
 
-	return render_template('add_user.html', form=form)
+	return render_template('add_user.html')
