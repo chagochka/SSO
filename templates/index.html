@@ -4,4 +4,14 @@
     {% if current_user.is_authenticated %}
         <h2>Пользователь авторизирован</h2>
     {% endif %}
+    <div class="container">
+        <h3>Загрузите файл</h3>
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="file" name="file">
+            <label class="custom-file-label" for="file">Выберите файл</label>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">
+            <i class="fas fa-upload"></i> Отправить
+        </button>
+    </div>
 {% endblock %}
