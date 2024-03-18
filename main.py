@@ -69,11 +69,12 @@ def uploaded_file(filename):
 	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def index():
 	"""Корневая страница"""
 	db = db_session.create_session()
+
 	print(request.method)
 	if request.method == 'POST':
 		print(1)
