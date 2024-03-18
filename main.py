@@ -75,15 +75,11 @@ def index():
 	"""Корневая страница"""
 	db = db_session.create_session()
 
-	print(request.method)
 	if request.method == 'POST':
-		print(1)
 		if 'file' not in request.files:
-			print(2)
 			return 'No file part', 400
 		file = request.files['file']
 		if file.filename == '':
-			print(3)
 			return 'No selected file', 400
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
