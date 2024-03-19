@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Add User</h2>
+
+    <form method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <button class="btn btn-primary mt-3" type="submit">Добавить студента</button>
+    </form>
+{% endblock %}

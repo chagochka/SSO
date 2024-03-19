@@ -1,4 +1,4 @@
-"""Модель для работы с SQL-таблицей users"""
+"""Модель для работы с SQL-таблицей reports"""
 
 import datetime
 import sqlalchemy
@@ -19,8 +19,7 @@ class Report(SqlAlchemyBase, UserMixin):
     path = sqlalchemy.Column(sqlalchemy.Text)
     date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
 
-    users = orm.relationship('User')
-    # Эта строка понадобится для свяи со строкой из др. файла ...py --> user = orm.relation('User')
+    users = orm.relationship('User', back_populates="reports")
 
     def to_dict(self):
         """Преобразование объекта User в словарь"""

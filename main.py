@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from flask import (
 	Flask,
@@ -6,13 +7,15 @@ from flask import (
 	request,
 	make_response,
 	session,
-	jsonify
+	jsonify,
+	send_from_directory
 )
 from flask_login import (
 	LoginManager,
 	login_user,
 	logout_user,
-	login_required
+	login_required,
+	current_user
 )
 from flask_restful import Api
 from werkzeug.utils import redirect
@@ -20,16 +23,28 @@ from werkzeug.utils import redirect
 from data import db_session, admin_api
 from data.login import LoginForm
 from data.register import RegisterForm
-from data.users import User
 from data.report_resourses import ReportResource, ReportsList
+from data.users import User
+
+UPLOAD_FOLDER = 'reports'
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandex_lyceum_secret_key'
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=365)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 api = Api(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+if not os.path.exists(UPLOAD_FOLDER):
+	os.makedirs(UPLOAD_FOLDER)
+
+
+def allowed_file(filename):
+	ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'docx'}
+	return '.' in filename and \
+		filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.errorhandler(404)
@@ -46,15 +61,42 @@ def bad_request(_):
 def load_user(user_id):
 	"""Загрузка пользователя"""
 	db = db_session.create_session()
-	return db.query(User).get(user_id)
+	return db.get(User, user_id)
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 @app.route('/')
 @app.route('/index')
 def index():
 	"""Корневая страница"""
-	db = db_session.create_session()
 	return render_template('index.html')
+
+
+@login_required
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+	"""Страница для отправки отчёта"""
+
+	if request.method == 'POST':
+		if 'file' not in request.files:
+			return 'No file part', 400
+		file = request.files['file']
+		if file.filename == '':
+			return 'No selected file', 400
+		if file and allowed_file(file.filename):
+			# filename = secure_filename(file.filename)
+			if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)):
+				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name))
+
+			file.save(os.path.join(f"{app.config['UPLOAD_FOLDER']}/{current_user.name}",
+			                       datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d')))
+	# return redirect(url_for('uploaded_file', filename=filename))
+
+	return render_template('upload.html')
 
 
 # URL http://localhost:5000/register
