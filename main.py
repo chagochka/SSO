@@ -117,7 +117,9 @@ def reqister():
 			                       form=regform,
 			                       message='Такой пользователь уже есть')
 		user = User()
+		user.surname = regform.surname.data
 		user.name = regform.name.data
+		user.patronymic = regform.patronymic.data
 		user.email = regform.email.data
 		user.status = 'Учащийся'
 		user.about = regform.about.data
