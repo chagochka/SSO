@@ -92,8 +92,8 @@ def upload():
 			if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)):
 				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name))
 
-			file.save(os.path.join(f"{app.config['UPLOAD_FOLDER']}\\{current_user.name}",
-			                       datetime.datetime.strftime(datetime.datetime.now(), '%d.%m.%Y')))
+			file.save(os.path.join(f"{app.config['UPLOAD_FOLDER']}/{current_user.name}",
+			                       datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d')))
 	# return redirect(url_for('uploaded_file', filename=filename))
 
 	return render_template('upload.html')
