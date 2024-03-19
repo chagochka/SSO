@@ -25,6 +25,7 @@ from data.login import LoginForm
 from data.register import RegisterForm
 from data.report_resourses import ReportResource, ReportsList
 from data.users import User
+from data.reports import Report
 
 UPLOAD_FOLDER = 'reports'
 
@@ -183,6 +184,13 @@ def login():
 		title='Авторизация',
 		form=form
 	)
+
+@app.route('/user/<user_login>')
+def search_user(user_login):
+	"""Страница пользователя"""
+	user = db.query(User).filter(User.email == user_login).first()
+	user_reports_list = db.query(Report).filter(Report.id == user.id).all()
+	return render_template('user_account_form.html', user=user, reports=user_reports_list)
 
 
 # URL http://localhost:5000/logout
