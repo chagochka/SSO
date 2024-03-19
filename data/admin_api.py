@@ -64,10 +64,13 @@ def get_one_user(user_id):
 
 
 @blueprint.route('/admin/add_user', methods=['GET', 'POST'])
-@admin_required
+@login_required
 def add_user():
+	if current_user.status != "admin":
+		return make_response(jsonify({'error': 'Отказано в доступе'}), 400)
+
 	db_sess = db_session.create_session()
-	print(request.method)
+
 	if request.method == 'POST':
 		name = request.form.get('name')
 		user = User()
@@ -77,3 +80,5 @@ def add_user():
 		return redirect('/admin/dashboard')
 
 	return render_template('add_user.html')
+
+
