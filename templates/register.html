@@ -32,12 +32,7 @@
         <p>
             <i class="fa-solid fa-user"></i>
             {{form.full_name.label}}<br>
-            <select class="form-select" name="full_name" required>
-                <option selected>Выберите полное имя</option>
-                <option value="Иванов Иван Иванович">Иванов Иван Иванович</option>
-                <option value="Петров Петр Петрович">Петров Петр Петрович</option>
-                <!-- Add more options as needed -->
-            </select>
+            {{form.full_name(class="form-select")}}<br>
             {% for error in form.full_name.errors %}
                 <p class="alert alert-danger" role="alert">{{error}}</p>
             {% endfor %}

@@ -20,12 +20,13 @@ from flask_login import (
 from flask_restful import Api
 from werkzeug.utils import redirect
 
+from sqlalchemy import and_
+
 from data import db_session, admin_api
 from data.login import LoginForm
 from data.register import RegisterForm
 from data.report_resourses import ReportResource, ReportsList
 from data.users import User
-
 UPLOAD_FOLDER = 'reports'
 
 app = Flask(__name__)
@@ -116,15 +117,15 @@ def reqister():
 			                       title='Регистрация',
 			                       form=regform,
 			                       message='Такой пользователь уже есть')
-		user = User()
-		user.surname = regform.surname.data
-		user.name = regform.name.data
-		user.patronymic = regform.patronymic.data
+
+		surname, name, patronymic = regform.full_name.data.split()
+
+		user = db.query(User).filter(and_(
+			User.surname == surname, User.name == name, User.patronymic == patronymic)).first()
 		user.email = regform.email.data
 		user.status = 'Учащийся'
 		user.about = regform.about.data
 		user.set_password(regform.password.data)
-		db.add(user)
 		db.commit()
 		return redirect('/login')
 	return render_template(
