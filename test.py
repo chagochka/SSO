@@ -1,2 +1,2 @@
 import datetime
-print(datetime.datetime.strftime(datetime.datetime.now(), '%d.%m.%Y'))
+print(datetime.datetime.now().isoformat())
