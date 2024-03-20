@@ -32,7 +32,11 @@
         <p>
             <i class="fa-solid fa-user"></i>
             {{form.full_name.label}}<br>
-            {{form.full_name(class="form-select")}}<br>
+            {% if form.full_name.choices %}
+                {{form.full_name(class="form-select")}}<br>
+            {% else %}
+                Все студенты уже зарегистрированы<br>
+            {% endif %}
             {% for error in form.full_name.errors %}
                 <p class="alert alert-danger" role="alert">{{error}}</p>
             {% endfor %}
@@ -45,7 +49,11 @@
                 <p class="alert alert-danger" role="alert">{{error}}</p>
             {% endfor %}
         </p>
-        <p>{{form.submit(type="submit", class="btn btn-primary")}}</p>
+        {% if form.full_name.choices %}
+            <p>{{form.submit(type="submit", class="btn btn-primary")}}</p>
+        {% else %}
+            Все студенты уже зарегистрированы, обратитесь к руководителю если вы уверены что должны зарегистрироваться в систему<br>
+        {% endif %}
         {{message}}
     </form>
 {% endblock %}
