@@ -94,7 +94,7 @@ def upload():
 				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name))
 
 			tmp = os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)
-			file.save(os.path.join(str(tmp), datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d')))
+			file.save(os.path.join(str(tmp), datetime.datetime.now().isoformat()))
 	# return redirect(url_for('uploaded_file', filename=filename))
 
 	return render_template('upload.html')
