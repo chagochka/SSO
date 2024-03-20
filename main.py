@@ -105,6 +105,7 @@ def upload():
 def reqister():
 	"""Страница регистрации"""
 	regform = RegisterForm()
+	regform.create_full_name()
 	if regform.validate_on_submit():
 		if regform.password.data != regform.password_again.data:
 			return render_template('register.html',
