@@ -16,15 +16,16 @@ class User(SqlAlchemyBase, UserMixin):
 	__tablename__ = 'users'
 
 	id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+	surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 	name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+	patronymic = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 	status = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 	about = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 	email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)
 	hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 	created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
 
-	reports = orm.relationship('Report')
-	# Эта строка понадобится для свяи со строкой из др. файла ...py --> user = orm.relation('User')
+	reports = orm.relationship('Report', back_populates="users")
 
 	def set_password(self, password):
 		"""Создание хеша пароля"""

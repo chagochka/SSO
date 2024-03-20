@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import jsonify, make_response, Blueprint, current_app, render_template
+from flask import jsonify, make_response, Blueprint, current_app, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 
 from . import db_session
@@ -61,3 +61,31 @@ def get_one_user(user_id):
 			'user': user.to_dict()
 		}
 	)
+
+
+@blueprint.route('/admin/add_user', methods=['GET', 'POST'])
+@login_required
+def add_user():
+	if current_user.status != "admin":
+		return make_response(jsonify({'error': 'Отказано в доступе'}), 400)
+
+	db_sess = db_session.create_session()
+
+	if request.method == 'POST':
+		surname = request.form.get('surname')
+		name = request.form.get('name')
+		patronymic = request.form.get('patronymic')
+
+		user = User()
+		user.surname = surname
+		user.name = name
+		user.patronymic = patronymic
+		user.status = 'Учащийся'
+
+		db_sess.add(user)
+		db_sess.commit()
+		return redirect('/admin/dashboard')
+
+	return render_template('add_user.html')
+
+
