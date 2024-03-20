@@ -20,6 +20,8 @@ from flask_login import (
 from flask_restful import Api
 from werkzeug.utils import redirect
 
+from sqlalchemy import and_
+
 from data import db_session, admin_api
 from data.login import LoginForm
 from data.register import RegisterForm
@@ -104,26 +106,33 @@ def upload():
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
 	"""Страница регистрации"""
+	db = db_session.create_session()
+
 	regform = RegisterForm()
+	users = db.query(User).filter(User.status == 'Учащийся').all()
+	regform.full_name.choices = [
+		(f'{user.surname} {user.name} {user.patronymic}', f'{user.surname} {user.name} {user.patronymic}') for user in
+		users if not user.email]
 	if regform.validate_on_submit():
 		if regform.password.data != regform.password_again.data:
 			return render_template('register.html',
 			                       title='Регистрация',
 			                       form=regform,
 			                       message='Пароли не совпадают')
-		db = db_session.create_session()
 		if db.query(User).filter(User.email == regform.email.data).first():
 			return render_template('register.html',
 			                       title='Регистрация',
 			                       form=regform,
 			                       message='Такой пользователь уже есть')
-		user = User()
-		user.name = regform.name.data
+
+		surname, name, patronymic = regform.full_name.data.split()
+
+		user = db.query(User).filter(and_(
+			User.surname == surname, User.name == name, User.patronymic == patronymic)).first()
 		user.email = regform.email.data
 		user.status = 'Учащийся'
 		user.about = regform.about.data
 		user.set_password(regform.password.data)
-		db.add(user)
 		db.commit()
 		return redirect('/login')
 	return render_template(

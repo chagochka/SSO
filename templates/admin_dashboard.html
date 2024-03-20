@@ -35,8 +35,14 @@ $(document).ready(function(){
                 <tbody>
                     {% for user in users %}
                         <tr>
-                            <td>{{ user.name }}</td>
-                            <td>{{ user.email }}</td>
+                            <td>{{ user.name }} {{ user.surname }}</td>
+                            <td>
+                                {% if user.email %}
+                                    {{ user.email }}
+                                {% else %}
+                                    Пользователь ещё не зарегистрировался
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
