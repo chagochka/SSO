@@ -104,15 +104,19 @@ def upload():
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
 	"""Страница регистрации"""
+	db = db_session.create_session()
+
 	regform = RegisterForm()
-	regform.create_full_name()
+	users = db.query(User).filter(User.status == 'Учащийся').all()
+	regform.full_name.choices = [
+		(f'{user.surname} {user.name} {user.patronymic}', f'{user.surname} {user.name} {user.patronymic}') for user in
+		users if not user.email]
 	if regform.validate_on_submit():
 		if regform.password.data != regform.password_again.data:
 			return render_template('register.html',
 			                       title='Регистрация',
 			                       form=regform,
 			                       message='Пароли не совпадают')
-		db = db_session.create_session()
 		if db.query(User).filter(User.email == regform.email.data).first():
 			return render_template('register.html',
 			                       title='Регистрация',
