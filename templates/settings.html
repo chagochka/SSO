@@ -1,10 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+<div class="container mt-3">
+    <h2>Настройки</h2>
+    <form action="/admin/update_settings" method="post">
+        <div id="deadlines">
+            <div class="mb-3">
+                <label for="deadline1" class="form-label">Дедлайн 1:</label>
+                <input type="date" class="form-control" id="deadline1" name="deadlines[]" required>
+                <button type="button" class="btn btn-danger remove-deadline">Удалить</button>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary add-deadline">Добавить дедлайн</button>
+        <button type="submit" class="btn btn-success">Сохранить</button>
+    </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    var deadlineIndex = 1;
+
+    // Add new deadline input field
+    $('.add-deadline').click(function() {
+        deadlineIndex++;
+        var newDeadline = '<div class="mb-3">' +
+                            '<label for="deadline' + deadlineIndex + '" class="form-label">Дедлайн ' + deadlineIndex + ':</label>' +
+                            '<input type="date" class="form-control" id="deadline' + deadlineIndex + '" name="deadlines[]" required>' +
+                            '<button type="button" class="btn btn-danger remove-deadline">Удалить</button>' +
+                          '</div>';
+        $('#deadlines').append(newDeadline);
+    });
+
+    // Remove deadline input field
+    $('#deadlines').on('click', '.remove-deadline', function() {
+        $(this).parent().remove();
+    });
+});
+</script>
+{% endblock %}

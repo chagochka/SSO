@@ -89,3 +89,7 @@ def add_user():
 	return render_template('add_user.html')
 
 
+@blueprint.route('/admin/settings')
+@admin_required
+def settings():
+	return render_template('settings.html')
