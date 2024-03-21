@@ -107,8 +107,8 @@ def upload():
             sql_fetch_blob_query = """SELECT * from reports where id = ?"""
             cursor.execute(sql_fetch_blob_query, (idrep,))
             # ОТПРОВЛЯЕМЫЙ ФАЙЛ ДОЛЖЕН НАЗЫВАТьСЯ "report.txt"
-            resume_path = os.path.join(f"report/{current_user.name}", "report.txt")
-            write_to_file(current_user.name, resume_path, datetime.datetime.now().isoformat())
+            write_to_file(current_user.name, f"report/{current_user.name}/report.txt",
+                          datetime.datetime.now().isoformat())
 
             cursor.close()
             sqlite_connection.close()
@@ -121,7 +121,6 @@ def write_to_file(data, filename):
     # Преобразование двоичных данных в нужный формат
     with open(filename, 'wb') as file:
         file.write(data)
-    print("Данный из blob сохранены в: ", filename, "\n")
 
 
 # URL http://localhost:5000/register
