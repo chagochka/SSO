@@ -9,8 +9,7 @@ from flask import (
     make_response,
     session,
     jsonify,
-    send_from_directory,
-    secure_filename
+    send_from_directory
 )
 from flask_login import (
     LoginManager,
