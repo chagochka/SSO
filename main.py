@@ -108,7 +108,7 @@ def upload():
 				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name))
 
 			tmp = os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)
-			path = os.path.join(str(tmp), datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S"))
+			path = os.path.join(str(tmp), f'{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.docx')
 			file.save(path)
 			print(find_links(path))
 	# return redirect(url_for('uploaded_file', filename=filename))
