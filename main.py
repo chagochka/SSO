@@ -108,9 +108,18 @@ def upload():
 				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name))
 
 			tmp = os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)
-			path = os.path.join(str(tmp), f'{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.docx')
+			date = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+			path = os.path.join(str(tmp), f'{date}.docx')
 			file.save(path)
-			print(find_links(path))
+
+			report = Report()
+			report.author_id = current_user.id
+			report.path = path
+			report.points = 0
+			report.status = 'Не проверено'
+			report.links = find_links(path)
+			db.add(report)
+			db.commit()
 	# return redirect(url_for('uploaded_file', filename=filename))
 
 	return render_template('upload.html')
