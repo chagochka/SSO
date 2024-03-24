@@ -1,6 +1,8 @@
 import datetime
 import os
 
+from docx import Document
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from flask import (
 	Flask,
 	render_template,
@@ -18,16 +20,15 @@ from flask_login import (
 	current_user
 )
 from flask_restful import Api
-from werkzeug.utils import redirect
-
 from sqlalchemy import and_
+from werkzeug.utils import redirect
 
 from data import db_session, admin_api
 from data.login import LoginForm
 from data.register import RegisterForm
 from data.report_resourses import ReportResource, ReportsList
-from data.users import User
 from data.reports import Report
+from data.users import User
 
 UPLOAD_FOLDER = 'reports'
 
@@ -45,9 +46,20 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 
 def allowed_file(filename):
-	ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'docx'}
 	return '.' in filename and \
-		filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+		filename.rsplit('.', 1)[1].lower() in ['docx']
+
+
+def find_links(file):
+	document = Document(file)
+	rels = document.part.rels
+	links = 0
+
+	for rel in rels:
+		if rels[rel].reltype == RT.HYPERLINK:
+			links += 1
+
+	return links
 
 
 @app.errorhandler(404)
@@ -96,7 +108,20 @@ def upload():
 				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name))
 
 			tmp = os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)
-			file.save(os.path.join(str(tmp), datetime.datetime.now().isoformat()))
+			date = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+			path = os.path.join(str(tmp), f'{date}.docx')
+			file.save(path)
+
+			report = Report()
+			report.author_id = current_user.id
+			report.path = path
+			report.points = 0
+			report.status = 'Не проверено'
+			report.links = find_links(path)
+			db.add(report)
+			db.commit()
+
+			return render_template('upload.html', message='Отчёт успешно отправлен')
 	# return redirect(url_for('uploaded_file', filename=filename))
 
 	return render_template('upload.html')
@@ -193,6 +218,7 @@ def login():
 		title='Авторизация',
 		form=form
 	)
+
 
 @app.route('/user/<user_login>')
 def search_user(user_login):
