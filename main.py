@@ -120,6 +120,8 @@ def upload():
 			report.links = find_links(path)
 			db.add(report)
 			db.commit()
+
+			return render_template('upload.html', message='Отчёт успешно отправлен')
 	# return redirect(url_for('uploaded_file', filename=filename))
 
 	return render_template('upload.html')
