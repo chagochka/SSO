@@ -1,7 +1,29 @@
 {% extends "base.html" %}
+<link rel="stylesheet" type="text/css" href="templates/user_account.css">
 {% block content %}
+<style>
+pre {
+    background: #f7f7f8;
+
+    font-family: "Fira Code", Arial, sans-serif;
+    font-size: 17px;
+
+    margin: 5px;
+
+    border-radius: 10px;
+
+    padding-top: 16px;
+    padding-right: 16px;
+    padding-bottom: 16px;
+    padding-left: 16px;
+
+    border: 1px solid #e9eaec
+}
+</style>
     <h1>{{user.name}}</h1>
         {% for item in reports %}
-        <h2 class="report_form">{{item}}</h2>
+        <pre>
+            {{item}}
+        </pre>
         {% endfor %}
 {% endblock %}
