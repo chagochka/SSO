@@ -3,6 +3,8 @@
 {% block content %}
     <h1>{{user.name}}</h1>
     <div>
-        {{reports}}
+        {% for report in reports %}
+            <div>Отчёт от: {{ report.date }} <a href="{{ url_for('uploaded_report', report_path=report.path) }}"><i class="fa-solid fa-file-arrow-down"></i></a></div>
+        {% endfor %}
     </div>
 {% endblock %}

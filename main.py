@@ -47,7 +47,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 def allowed_file(filename):
 	return '.' in filename and \
-		filename.rsplit('.', 1)[1].lower() in ['docx']
+		filename.rsplit('.', 1)[1].lower() in {'docx'}
 
 
 def find_links(file):
@@ -79,9 +79,12 @@ def load_user(user_id):
 	return db.get(User, user_id)
 
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+@app.route('/uploads/<report_path>')
+def uploaded_report(report_path):
+	path_parts = report_path.split(os.path.sep)
+	directory = os.path.join(app.config['UPLOAD_FOLDER'], path_parts[0])
+	filename = path_parts[1]
+	return send_from_directory(directory, filename)
 
 
 @app.route('/')
@@ -107,14 +110,14 @@ def upload():
 			if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)):
 				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name))
 
-			tmp = os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)
 			date = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
-			path = os.path.join(str(tmp), f'{date}.docx')
+			tmp = os.path.join(current_user.name, f'{date}.docx')
+			path = os.path.join(app.config['UPLOAD_FOLDER'], str(tmp))
 			file.save(path)
 
 			report = Report()
 			report.author_id = current_user.id
-			report.path = path
+			report.path = tmp
 			report.points = 0
 			report.status = 'Не проверено'
 			report.links = find_links(path)
