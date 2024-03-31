@@ -40,10 +40,15 @@ $(document).ready(function(){
                 <tbody>
                     {% for user in users %}
                         <tr>
-                            <td>{{ user.name }} {{ user.surname }}</td>
                             <td>
                                 {% if user.email %}
-                                    {{ user.email }}
+                                    <a href="{{ url_for('search_user', user_login=user.email) }}"><i class="fa-regular fa-file-lines"></i></a>
+                                {% endif %}
+                                {{ user.name }} {{ user.surname }}
+                            </td>
+                            <td>
+                                {% if user.email %}
+                                    <a href="mailto:{{ user.email }}">{{ user.email }}</a>
                                 {% else %}
                                     Пользователь ещё не зарегистрировался
                                 {% endif %}
