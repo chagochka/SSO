@@ -1,5 +1,6 @@
 import datetime
 import os
+import sys
 
 from docx import Document
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
@@ -232,6 +233,8 @@ def search_user(user_login):
     user_reports_list = db.query(Report).filter(Report.author_id == user.id).all()
     user_reports_list = [[str(i.date).split()[0], str(i.date).split()[1].split('.')[0], i.points, i.status]
                          for i in user_reports_list]
+    user_reports_list = [f'Дата сдачи: {i[0]}{" " * 5}Время сдачи: {i[1]}\nСтатус: {i[3]}{" " * 5}Балл: {i[2]}' for i in
+                         user_reports_list]
     print(user_reports_list)
     return render_template('user_account_form.html', user=user, reports=user_reports_list)
 
