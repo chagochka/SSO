@@ -17,13 +17,20 @@ pre {
     padding-bottom: 16px;
     padding-left: 16px;
 
-    border: 1px solid #e9eaec
+    border: 1px solid #e9eaec;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.icon-large {
+    font-size: 44px;
 }
 </style>
     <h1>{{user.name}}</h1>
         {% for item in reports %}
-        <pre>
-            {{item}} <img src="/images/download.png" align="right" vspace="10px">
-        </pre>
+            <pre>
+                {{item}}
+                <a href="#"><i class="fa-solid fa-file-arrow-down icon-large"></i></a>
+            </pre>
         {% endfor %}
 {% endblock %}
