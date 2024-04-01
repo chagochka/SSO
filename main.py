@@ -227,7 +227,7 @@ def login():
 def search_user(user_login):
 	"""Страница пользователя"""
 	user = db.query(User).filter(User.email == user_login).first()
-	user_reports_list = db.query(Report).filter(Report.author_id == user.id).all()
+	user_reports_list = user.reports
 	return render_template('user_account_form.html', user=user, reports=user_reports_list)
 
 
