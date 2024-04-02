@@ -85,7 +85,7 @@ def load_user(user_id):
 @app.route('/uploads/<report_path>')
 def uploaded_report(report_path):
 	if '\\' in report_path:
-		report_path = PureWindowsPath(Path(report_path))
+		report_path = Path(PureWindowsPath(report_path))
 
 	path_parts = str(report_path).split(os.path.sep)
 	directory = os.path.join(app.config['UPLOAD_FOLDER'], *path_parts[:-1])
