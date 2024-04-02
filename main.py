@@ -82,8 +82,8 @@ def load_user(user_id):
 @app.route('/uploads/<report_path>')
 def uploaded_report(report_path):
 	path_parts = report_path.split(os.path.sep)
-	directory = os.path.join(app.config['UPLOAD_FOLDER'], path_parts[0])
-	filename = path_parts[1]
+	directory = os.path.join(app.config['UPLOAD_FOLDER'], *path_parts[:-1])
+	filename = path_parts[-1]
 	return send_from_directory(directory, filename)
 
 
