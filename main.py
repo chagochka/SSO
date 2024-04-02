@@ -4,7 +4,7 @@ import sys
 
 from docx import Document
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 from flask import (
 	Flask,
@@ -84,8 +84,10 @@ def load_user(user_id):
 
 @app.route('/uploads/<report_path>')
 def uploaded_report(report_path):
-	report_path = Path(report_path)
-	path_parts = report_path.split(os.path.sep)
+	if '\\' in report_path:
+		report_path = PureWindowsPath(Path(report_path))
+
+	path_parts = str(report_path).split(os.path.sep)
 	directory = os.path.join(app.config['UPLOAD_FOLDER'], *path_parts[:-1])
 	filename = path_parts[-1]
 	return send_from_directory(directory, filename)
