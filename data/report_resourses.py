@@ -55,7 +55,7 @@ class ReportsList(Resource):
 
     @staticmethod
     def post():
-        """Добавляет новость в список отчётов"""
+        """Добавляет отчёт в список отчётов"""
         db = db_session.create_session()
         report = Report()
         db.add(report)
