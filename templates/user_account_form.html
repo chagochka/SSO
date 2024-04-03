@@ -2,9 +2,36 @@
 
 {% block content %}
     <h1>{{user.name}}</h1>
-    <div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Время</th>
+            <th>Статус</th>
+            <th>Балл</th>
+            <th>Ссылка на скачивание</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for report in reports %}
-            <div>Отчёт от: {{ report.date }} <a href="{{ url_for('uploaded_report', report_path=report.path) }}"><i class="fa-solid fa-file-arrow-down"></i></a></div>
+        <tr>
+            <td>
+                {{ report.date.split(' ')[0] }}
+            </td>
+            <td>
+                {{ report.date.split(' ')[1] }}
+            </td>
+            <td>
+                {{ report.status }}
+            </td>
+            <td>
+                {{ report.points }}
+            </td>
+            <td>
+                <a href="{{ url_for('uploaded_report', report_path=report.path) }}"><i class="fa-solid fa-file-arrow-down"></i></a>
+            </td>
+        </tr>
         {% endfor %}
-    </div>
+        </tbody>
+    </table>
 {% endblock %}
