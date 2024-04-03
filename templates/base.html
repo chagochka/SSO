@@ -7,24 +7,74 @@
 		<script src="https://kit.fontawesome.com/c860e860c2.js" crossorigin="anonymous"></script>
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<title>{{title}}</title>
+		<style>
+			body {
+				background-color: #121212; /* Тёмный фон */
+				color: #FFFFFF; /* Светлый текст */
+				font-family: 'Courier New', Courier, monospace; /* Моноширинный шрифт */
+			}
+			.navbar {
+				background-color: #222222; /* Тёмный фон для навигационной панели */
+			}
+			.navbar-brand, .navbar-brand a {
+				color: #FFFFFF; /* Светлый текст для ссылок */
+			}
+			.btn {
+				border: 1px solid #FFFFFF; /* Белая граница для кнопок */
+				color: #FFFFFF; /* Светлый текст для кнопок */
+				transition: all 0.3s ease; /* Сглаживание переходов */
+				position: relative;
+				overflow: hidden;
+			}
+			.btn:before {
+				content: "";
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				width: 0;
+				height: 0;
+				border-radius: 50%;
+				background: rgba(255, 255, 255, 0.5);
+				transition: all 0.3s ease;
+			}
+			.btn:hover:before {
+				width: 200%;
+				height: 200%;
+			}
+			.btn:active {
+				transform: scale(0.95);
+			}
+			.btn{
+				background-color: #333333; /* Тёмный фон для кнопок */
+			}
+			.container {
+				background-color: #222222; /* Тёмный фон для контейнера */
+				border: 1px solid #FFFFFF; /* Белая граница для контейнера */
+				padding: 20px;
+			}
+			td, tr{
+				color: #FFFFFF;
+			}
+		</style>
 	</head>
 	<body>
 		<header>
 			<nav class="navbar navbar-light bg-light">
-				<a class="navbar-brand" href="/"><i class="fa-solid fa-house"></i>  Главная</a>
+				<a class="navbar-brand" href="/"><i class="fa-solid fa-house"></i> Главная</a>
 				{% if current_user.is_authenticated %}
 					{% if current_user.status == "admin"%}
-						<a class="btn btn-warning" href="/admin/dashboard"><i class="fa-solid fa-user-shield"></i> Панель администратора</a>
+						<a class="btn" href="/admin/dashboard"><i class="fa-solid fa-user-shield"></i> Панель администратора</a>
 					{% else %}
-						<a class="btn btn-primary" href="/upload"><i class="fa-solid fa-file-arrow-up"></i> Загрузить отчёт</a>
+						<a class="btn" href="/upload"><i class="fa-solid fa-file-arrow-up"></i> Загрузить отчёт</a>
 					{% endif %}
 					<div class="navbar-brand">{{current_user.name}} | {{current_user.status}}   <a href="/logout" class="text-decoration-none text-reset"><i class="fa-solid fa-right-from-bracket"></i></a></div>
 				{% else %}
 					<p>
-						<a class="btn btn-primary " href="/register">Зарегистрироваться</a>
-						<a class="btn btn-success" href="/login">Войти</a>
+						<a class="btn" href="/register">Зарегистрироваться</a>
+						<a class="btn" href="/login">Войти</a>
 					</p>
-				{% endif %}				
+				{% endif %}
 			</nav>
 		</header>
 
@@ -32,11 +82,6 @@
 		<main role="main" class="container">
 			{% block content %}{% endblock %}
 		</main>
-		
+
 	</body>
 </html>
-
-
-
-
-
