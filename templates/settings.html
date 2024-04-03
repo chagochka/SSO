@@ -4,38 +4,79 @@
 <div class="container mt-3">
     <h2>Настройки</h2>
     <form action="/admin/update_settings" method="post">
-        <div id="deadlines">
-            <div class="mb-3">
-                <label for="deadline1" class="form-label">Дедлайн 1:</label>
-                <input type="date" class="form-control" id="deadline1" name="deadlines[]" required>
-                <button type="button" class="btn btn-danger remove-deadline">Удалить</button>
+        <div id="deadlines" class="accordion">
+            {% for month, deadlines in deadlines_by_month.items() %}
+            <div class="card mb-3">
+                <div class="card-header" id="heading{{ loop.index }}">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                            {{ month }}
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="heading{{ loop.index }}" data-parent="#deadlines">
+                    <div class="card-body">
+                        {% for deadline in deadlines %}
+                        <div class="input-group mt-2">
+                            <input type="date" class="form-control" id="deadline{{ loop.index }}" name="deadlines[]" value="{{ deadline }}" required>
+                            <div class="input-group-append">
+                                <button class="btn btn-danger remove-deadline" type="button" value="{{ loop.index }}">Удалить</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
+            {% endfor %}
         </div>
         <button type="button" class="btn btn-primary add-deadline">Добавить дедлайн</button>
+
+         <div class="form-group">
+            <label for="maxLinks">Максимум ссылок:</label>
+            <input type="number" class="form-control" id="maxLinks" name="maxLinks" value="{{ maxLinks }}" required>
+        </div>
+        <div class="form-group">
+            <label for="minLinks">Минимум ссылок:</label>
+            <input type="number" class="form-control" id="minLinks" name="minLinks" value="{{ minLinks }}" required>
+        </div>
+
         <button type="submit" class="btn btn-success">Сохранить</button>
     </form>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
-$(document).ready(function() {
-    var deadlineIndex = 1;
+    $(document).ready(function () {
+        var deadlineIndex = length.month;
 
-    // Add new deadline input field
-    $('.add-deadline').click(function() {
-        deadlineIndex++;
-        var newDeadline = '<div class="mb-3">' +
-                            '<label for="deadline' + deadlineIndex + '" class="form-label">Дедлайн ' + deadlineIndex + ':</label>' +
-                            '<input type="date" class="form-control" id="deadline' + deadlineIndex + '" name="deadlines[]" required>' +
-                            '<button type="button" class="btn btn-danger remove-deadline">Удалить</button>' +
-                          '</div>';
-        $('#deadlines').append(newDeadline);
-    });
+        $('.add-deadline').click(function () {
+            deadlineIndex++;
+            var newDeadline = '<div class="card mb-3">' +
+                '<div class="card-header" id="heading' + deadlineIndex + '">' +
+                '<h5 class="mb-0">' +
+                '<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse' + deadlineIndex + '" aria-expanded="false" aria-controls="collapse' + deadlineIndex + '">' +
+                'Новый дедлайн' +
+                '</button>' +
+                '</h5>' +
+                '</div>' +
+                '<div id="collapse' + deadlineIndex + '" class="collapse" aria-labelledby="heading' + deadlineIndex + '" data-parent="#deadlines">' +
+                '<div class="card-body">' +
+                '<div class="input-group mt-2">' +
+                '<input type="date" class="form-control" id="deadline' + deadlineIndex + '" name="deadlines[]" required>' +
+                '<div class="input-group-append">' +
+                '<button class="btn btn-danger remove-deadline" type="button" value="' + deadlineIndex + '">Удалить</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+            $('#deadlines').append(newDeadline);
+        });
 
-    // Remove deadline input field
-    $('#deadlines').on('click', '.remove-deadline', function() {
-        $(this).parent().remove();
+        $('#deadlines').on('click', '.remove-deadline', function () {
+            $(this).closest('.card').remove();
+        });
     });
-});
 </script>
 {% endblock %}
