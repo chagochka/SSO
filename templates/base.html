@@ -60,7 +60,7 @@
 	</head>
 	<body>
 		<header>
-			<nav class="navbar navbar-light bg-light">
+			<nav class="navbar">
 				<a class="navbar-brand" href="/"><i class="fa-solid fa-house"></i> Главная</a>
 				{% if current_user.is_authenticated %}
 					{% if current_user.status == "admin"%}
