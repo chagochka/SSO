@@ -75,7 +75,7 @@
         });
 
         $('#deadlines').on('click', '.remove-deadline', function () {
-            $(this).closest('.card').remove();
+            $(this).parent().parent().remove();
         });
     });
 </script>

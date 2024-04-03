@@ -1,11 +1,10 @@
+import configparser
 import datetime
 import os
-import sys
+from pathlib import Path, PureWindowsPath
 
 from docx import Document
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
-from pathlib import Path, PureWindowsPath
-
 from flask import (
 	Flask,
 	render_template,
@@ -116,22 +115,33 @@ def upload():
 			if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)):
 				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name))
 
+			config = configparser.ConfigParser()
+			config.read('settings.ini')
+
+			deadlines = [config.get('deadlines', deadline) for deadline in config.options('deadlines')]
+
+			maxLinks = config.get('settings', 'maxLinks', fallback='20')
+			minLinks = config.get('settings', 'minLinks', fallback='30')
+
+			if not any([0 <= (datetime.datetime.strptime(deadline, '%Y-%m-%d') - datetime.datetime.now()).days <= 3
+			            for deadline in deadlines]):
+				return render_template('upload.html', message='До дедлайна ещё далеко')
+
 			date = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
 			tmp = os.path.join(current_user.name, f'{date}.docx')
 			path = os.path.join(app.config['UPLOAD_FOLDER'], str(tmp))
 			file.save(path)
-
+			links = find_links(path)
 			report = Report()
 			report.author_id = current_user.id
 			report.path = tmp
 			report.points = 0
 			report.status = 'Не проверено'
-			report.links = find_links(path)
+			report.links = links
 			db.add(report)
 			db.commit()
 
 			return render_template('upload.html', message='Отчёт успешно отправлен')
-	# return redirect(url_for('uploaded_file', filename=filename))
 
 	return render_template('upload.html')
 
