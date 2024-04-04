@@ -83,12 +83,14 @@ def load_user(user_id):
 
 @app.route('/uploads/<report_path>')
 def uploaded_report(report_path):
+	print(report_path)
 	if '\\' in report_path:
 		report_path = Path(PureWindowsPath(report_path))
 
 	path_parts = str(report_path).split(os.path.sep)
 	directory = os.path.join(app.config['UPLOAD_FOLDER'], *path_parts[:-1])
 	filename = path_parts[-1]
+	print(directory, filename)
 	return send_from_directory(directory, filename)
 
 
@@ -112,8 +114,8 @@ def upload():
 			return 'No selected file', 400
 		if file and allowed_file(file.filename):
 			# filename = secure_filename(file.filename)
-			if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)):
-				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name))
+			if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], f'{current_user.surname}-{current_user.name}')):
+				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], f'{current_user.surname}-{current_user.name}'))
 
 			config = configparser.ConfigParser()
 			config.read('settings.ini')
@@ -128,7 +130,7 @@ def upload():
 				return render_template('upload.html', message='До дедлайна ещё далеко')
 
 			date = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
-			tmp = os.path.join(current_user.name, f'{date}.docx')
+			tmp = os.path.join(f'{current_user.surname}-{current_user.name}', f'{date}.docx')
 			path = os.path.join(app.config['UPLOAD_FOLDER'], str(tmp))
 			file.save(path)
 			links = find_links(path)
