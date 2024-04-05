@@ -81,17 +81,16 @@ def load_user(user_id):
 	return db.get(User, user_id)
 
 
-@app.route('/uploads/<report_path>')
-def uploaded_report(report_path):
-	print(report_path)
-	if '\\' in report_path:
-		report_path = Path(PureWindowsPath(report_path))
+@app.route('/uploads/<report_id>', methods=["GET"])
+def uploaded_report(report_id):
+	db = db_session.create_session()
 
-	path_parts = str(report_path).split(os.path.sep)
-	directory = os.path.join(app.config['UPLOAD_FOLDER'], *path_parts[:-1])
-	filename = path_parts[-1]
-	print(directory, filename)
-	return send_from_directory(directory, filename)
+	report = db.query(Report).filter(Report.id == report_id).first()
+	author = report.users
+
+	directory = os.path.join(app.config['UPLOAD_FOLDER'], f'{author.surname}-{author.name}')
+	print(directory, report.date.strftime("%Y-%m-%d %H-%M-%S"))
+	return send_from_directory(directory, f'{report.date.strftime("%Y-%m-%d %H-%M-%S")}.docx')
 
 
 @app.route('/')
@@ -133,10 +132,10 @@ def upload():
 			tmp = os.path.join(f'{current_user.surname}-{current_user.name}', f'{date}.docx')
 			path = os.path.join(app.config['UPLOAD_FOLDER'], str(tmp))
 			file.save(path)
+
 			links = find_links(path)
 			report = Report()
 			report.author_id = current_user.id
-			report.path = tmp
 			report.points = 0
 			report.status = 'Не проверено'
 			report.links = links
