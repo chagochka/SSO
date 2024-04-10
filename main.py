@@ -200,6 +200,17 @@ def session_count_2():
 	return response
 
 
+# URL http://localhost:5000/set_score/<report_id>
+@app.route('/set_score/<report_id>')
+def set_score(report_id):
+	report = db.query(Report).filter(Report.id == report_id).first()
+	date = [str(report.date).split()[0], str(report.date).split()[1].split('.')[0]]
+	author_id = report.author_id
+	user = db.query(User).filter(User.id == author_id).first()
+	path = f'http://localhost:5000/set_score/{report.id}'
+	return render_template('set_report_score.html', report=report, user=user, date=date, path=path)
+
+
 # URL http://localhost:5000/login
 @app.route('/login', methods=['GET', 'POST'])
 def login():

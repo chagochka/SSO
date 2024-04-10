@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{{user.name}}</h1>
+<h2>Отчет №{{ report.id }} от: {{ user.surname }} {{ user.name }} {{ user.patronymic }}</h2>
 <table class="table">
     <thead>
     <tr>
@@ -14,13 +14,12 @@
     </tr>
     </thead>
     <tbody>
-    {% for report in reports %}
     <tr>
         <td>
-            {{ report.date.split(' ')[0] }}
+            {{ date[0] }}
         </td>
         <td>
-            {{ report.date.split(' ')[1] }}
+            {{ date[1] }}
         </td>
         <td>
             {{ report.status }}
@@ -35,11 +34,30 @@
         <td>
             <button id="btn_click">Выставить оценку</button>
             <script>
-$('#btn_click').on('click', function() { window.location = 'http://localhost:5000/set_score/{{ report.id }}'; });  // не работает почему то
+$('#btn_click').on('click', function() { window.location = '{{ path }}'; });  // не работает
             </script>
         </td>
     </tr>
-    {% endfor %}
     </tbody>
 </table>
+<form>
+  <div>
+      <input type="radio" id="status_ok" name="status"/>
+      <label for="status_ok">Зачтено</label>
+  </div>
+    <div>
+      <input type="radio" id="status_no" name="status"/>
+      <label for="status_no">Не зачтено</label>
+  </div>
+</form>
+<div>
+    <input type="number" id="points" name="points"/>
+</div>
+<div class="form-group">
+    <label for="text">Комментарий</label>
+    <textarea class="form-control" id="text" rows="3" name="text"></textarea>
+</div>
+<div>
+    <button type="submit" class="btn btn-primary">Выставить оценку</button>
+</div>
 {% endblock %}
