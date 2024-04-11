@@ -1,7 +1,6 @@
 import configparser
 import datetime
 import os
-from pathlib import Path, PureWindowsPath
 
 from docx import Document
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
@@ -12,7 +11,7 @@ from flask import (
 	make_response,
 	session,
 	jsonify,
-	send_from_directory
+	send_from_directory, url_for
 )
 from flask_login import (
 	LoginManager,
@@ -89,7 +88,6 @@ def uploaded_report(report_id):
 	author = report.users
 
 	directory = os.path.join(app.config['UPLOAD_FOLDER'], f'{author.surname}-{author.name}')
-	print(directory, report.date.strftime("%Y-%m-%d %H-%M-%S"))
 	return send_from_directory(directory, f'{report.date.strftime("%Y-%m-%d %H-%M-%S")}.docx')
 
 
@@ -113,7 +111,8 @@ def upload():
 			return 'No selected file', 400
 		if file and allowed_file(file.filename):
 			# filename = secure_filename(file.filename)
-			if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], f'{current_user.surname}-{current_user.name}')):
+			if not os.path.exists(
+				os.path.join(app.config['UPLOAD_FOLDER'], f'{current_user.surname}-{current_user.name}')):
 				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], f'{current_user.surname}-{current_user.name}'))
 
 			config = configparser.ConfigParser()
@@ -241,13 +240,35 @@ def login():
 
 
 @app.route('/user/<user_login>')
+@login_required
 def search_user(user_login):
 	"""Страница пользователя"""
 	user = db.query(User).filter(User.email == user_login).first()
 	user_reports_list = user.reports
-	for i in user_reports_list:
-		i.date = str(i.date)
 	return render_template('user_account_form.html', user=user, reports=user_reports_list)
+
+
+@app.route('/update_report/<int:report_id>', methods=['POST'])
+@login_required
+def update_report(report_id):
+	if not current_user.status == "admin":
+		return redirect(url_for('index'))
+
+	report = db.query(Report).get(report_id)
+
+	points = request.form.get('points', type=int)
+	status = request.form.get('status')
+	if points is not None and status:
+		try:
+			report.points = points
+			report.status = status
+			print(status)
+			db.commit()
+		except:
+			db.rollback()
+			raise
+
+	return redirect(request.referrer)
 
 
 # URL http://localhost:5000/logout

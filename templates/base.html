@@ -13,7 +13,7 @@
 			<nav class="navbar navbar-light bg-light">
 				<a class="navbar-brand" href="/"><i class="fa-solid fa-house"></i>  Главная</a>
 				{% if current_user.is_authenticated %}
-					{% if current_user.status == "admin"%}
+					{% if current_user.status == "admin" %}
 						<a class="btn btn-warning" href="/admin/dashboard"><i class="fa-solid fa-user-shield"></i> Панель администратора</a>
 					{% else %}
 						<a class="btn btn-primary" href="/upload"><i class="fa-solid fa-file-arrow-up"></i> Загрузить отчёт</a>
