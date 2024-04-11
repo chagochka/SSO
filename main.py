@@ -1,6 +1,8 @@
 import datetime
 import os
 
+from docx import Document
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from flask import (
 	Flask,
 	render_template,
@@ -18,14 +20,15 @@ from flask_login import (
 	current_user
 )
 from flask_restful import Api
+from sqlalchemy import and_
 from werkzeug.utils import redirect
 
 from data import db_session, admin_api
 from data.login import LoginForm
 from data.register import RegisterForm
 from data.report_resourses import ReportResource, ReportsList
-from data.users import User
 from data.reports import Report
+from data.users import User
 
 UPLOAD_FOLDER = 'reports'
 
@@ -43,9 +46,20 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 
 def allowed_file(filename):
-	ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'docx'}
 	return '.' in filename and \
-		filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+		filename.rsplit('.', 1)[1].lower() in {'docx'}
+
+
+def find_links(file):
+	document = Document(file)
+	rels = document.part.rels
+	links = 0
+
+	for rel in rels:
+		if rels[rel].reltype == RT.HYPERLINK:
+			links += 1
+
+	return links
 
 
 @app.errorhandler(404)
@@ -65,9 +79,12 @@ def load_user(user_id):
 	return db.get(User, user_id)
 
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+@app.route('/uploads/<report_path>')
+def uploaded_report(report_path):
+	path_parts = report_path.split(os.path.sep)
+	directory = os.path.join(app.config['UPLOAD_FOLDER'], path_parts[0])
+	filename = path_parts[1]
+	return send_from_directory(directory, filename)
 
 
 @app.route('/')
@@ -93,8 +110,21 @@ def upload():
 			if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)):
 				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name))
 
-			tmp = os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)
-			file.save(os.path.join(str(tmp), datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d')))
+			date = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+			tmp = os.path.join(current_user.name, f'{date}.docx')
+			path = os.path.join(app.config['UPLOAD_FOLDER'], str(tmp))
+			file.save(path)
+
+			report = Report()
+			report.author_id = current_user.id
+			report.path = tmp
+			report.points = 0
+			report.status = 'Не проверено'
+			report.links = find_links(path)
+			db.add(report)
+			db.commit()
+
+			return render_template('upload.html', message='Отчёт успешно отправлен')
 	# return redirect(url_for('uploaded_file', filename=filename))
 
 	return render_template('upload.html')
@@ -104,26 +134,33 @@ def upload():
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
 	"""Страница регистрации"""
+	db = db_session.create_session()
+
 	regform = RegisterForm()
+	users = db.query(User).filter(User.status == 'Учащийся').all()
+	regform.full_name.choices = [
+		(f'{user.surname} {user.name} {user.patronymic}', f'{user.surname} {user.name} {user.patronymic}') for user in
+		users if not user.email]
 	if regform.validate_on_submit():
 		if regform.password.data != regform.password_again.data:
 			return render_template('register.html',
 			                       title='Регистрация',
 			                       form=regform,
 			                       message='Пароли не совпадают')
-		db = db_session.create_session()
 		if db.query(User).filter(User.email == regform.email.data).first():
 			return render_template('register.html',
 			                       title='Регистрация',
 			                       form=regform,
 			                       message='Такой пользователь уже есть')
-		user = User()
-		user.name = regform.name.data
+
+		surname, name, patronymic = regform.full_name.data.split()
+
+		user = db.query(User).filter(and_(
+			User.surname == surname, User.name == name, User.patronymic == patronymic)).first()
 		user.email = regform.email.data
 		user.status = 'Учащийся'
 		user.about = regform.about.data
 		user.set_password(regform.password.data)
-		db.add(user)
 		db.commit()
 		return redirect('/login')
 	return render_template(
@@ -185,11 +222,14 @@ def login():
 		form=form
 	)
 
+
 @app.route('/user/<user_login>')
 def search_user(user_login):
 	"""Страница пользователя"""
 	user = db.query(User).filter(User.email == user_login).first()
-	user_reports_list = db.query(Report).filter(Report.id == user.id).all()
+	user_reports_list = user.reports
+	for i in user_reports_list:
+		i.date = str(i.date)
 	return render_template('user_account_form.html', user=user, reports=user_reports_list)
 
 

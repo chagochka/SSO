@@ -16,7 +16,7 @@
 					{% if current_user.status == "admin"%}
 						<a class="btn btn-warning" href="/admin/dashboard"><i class="fa-solid fa-user-shield"></i> Панель администратора</a>
 					{% else %}
-						<a class="btn btn-warning" href="/upload"><i class="fa-solid fa-file-arrow-up"></i> Загрузить отчёт</a>
+						<a class="btn btn-primary" href="/upload"><i class="fa-solid fa-file-arrow-up"></i> Загрузить отчёт</a>
 					{% endif %}
 					<div class="navbar-brand">{{current_user.name}} | {{current_user.status}}   <a href="/logout" class="text-decoration-none text-reset"><i class="fa-solid fa-right-from-bracket"></i></a></div>
 				{% else %}

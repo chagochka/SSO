@@ -20,7 +20,12 @@ $(document).ready(function(){
                 <input type="text" class="form-control" id="username" name="username" placeholder="Введите имя или почту">
             </div>
              <form action="/admin/add_user" method="get">
-                <button class="btn btn-primary mt-3" type="submit">Добавить студента</button>
+                <button class="btn btn-primary mt-3" type="submit"><i class="fa-solid fa-plus"></i> Добавить студента</button>
+            </form>
+        </div>
+        <div class="fixed-bottom d-flex justify-content-end p-3">
+            <form action="/admin/settings" method="get">
+                <button class="btn btn-info mt-3" type="submit"><i class="fa-solid fa-gear"></i></button>
             </form>
         </div>
         <div class="col-md-8">
@@ -35,8 +40,19 @@ $(document).ready(function(){
                 <tbody>
                     {% for user in users %}
                         <tr>
-                            <td>{{ user.name }}</td>
-                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if user.email %}
+                                    <a href="{{ url_for('search_user', user_login=user.email) }}"><i class="fa-regular fa-file-lines"></i></a>
+                                {% endif %}
+                                {{ user.name }} {{ user.surname }}
+                            </td>
+                            <td>
+                                {% if user.email %}
+                                    <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                                {% else %}
+                                    Пользователь ещё не зарегистрировался
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

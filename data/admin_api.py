@@ -72,9 +72,16 @@ def add_user():
 	db_sess = db_session.create_session()
 
 	if request.method == 'POST':
+		surname = request.form.get('surname')
 		name = request.form.get('name')
+		patronymic = request.form.get('patronymic')
+
 		user = User()
+		user.surname = surname
 		user.name = name
+		user.patronymic = patronymic
+		user.status = 'Учащийся'
+
 		db_sess.add(user)
 		db_sess.commit()
 		return redirect('/admin/dashboard')
@@ -82,3 +89,7 @@ def add_user():
 	return render_template('add_user.html')
 
 
+@blueprint.route('/admin/settings')
+@admin_required
+def settings():
+	return render_template('settings.html')
