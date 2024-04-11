@@ -1,5 +1,7 @@
+import configparser
 import datetime
 import os
+from pathlib import Path, PureWindowsPath
 
 from docx import Document
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
@@ -79,12 +81,16 @@ def load_user(user_id):
 	return db.get(User, user_id)
 
 
-@app.route('/uploads/<report_path>')
-def uploaded_report(report_path):
-	path_parts = report_path.split(os.path.sep)
-	directory = os.path.join(app.config['UPLOAD_FOLDER'], path_parts[0])
-	filename = path_parts[1]
-	return send_from_directory(directory, filename)
+@app.route('/uploads/<report_id>', methods=["GET"])
+def uploaded_report(report_id):
+	db = db_session.create_session()
+
+	report = db.query(Report).filter(Report.id == report_id).first()
+	author = report.users
+
+	directory = os.path.join(app.config['UPLOAD_FOLDER'], f'{author.surname}-{author.name}')
+	print(directory, report.date.strftime("%Y-%m-%d %H-%M-%S"))
+	return send_from_directory(directory, f'{report.date.strftime("%Y-%m-%d %H-%M-%S")}.docx')
 
 
 @app.route('/')
@@ -107,25 +113,36 @@ def upload():
 			return 'No selected file', 400
 		if file and allowed_file(file.filename):
 			# filename = secure_filename(file.filename)
-			if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name)):
-				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], current_user.name))
+			if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], f'{current_user.surname}-{current_user.name}')):
+				os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], f'{current_user.surname}-{current_user.name}'))
+
+			config = configparser.ConfigParser()
+			config.read('settings.ini')
+
+			deadlines = [config.get('deadlines', deadline) for deadline in config.options('deadlines')]
+
+			maxLinks = config.get('settings', 'maxLinks', fallback='20')
+			minLinks = config.get('settings', 'minLinks', fallback='30')
+
+			if not any([0 <= (datetime.datetime.strptime(deadline, '%Y-%m-%d') - datetime.datetime.now()).days <= 3
+			            for deadline in deadlines]):
+				return render_template('upload.html', message='До дедлайна ещё далеко')
 
 			date = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
-			tmp = os.path.join(current_user.name, f'{date}.docx')
+			tmp = os.path.join(f'{current_user.surname}-{current_user.name}', f'{date}.docx')
 			path = os.path.join(app.config['UPLOAD_FOLDER'], str(tmp))
 			file.save(path)
 
+			links = find_links(path)
 			report = Report()
 			report.author_id = current_user.id
-			report.path = tmp
 			report.points = 0
 			report.status = 'Не проверено'
-			report.links = find_links(path)
+			report.links = links
 			db.add(report)
 			db.commit()
 
 			return render_template('upload.html', message='Отчёт успешно отправлен')
-	# return redirect(url_for('uploaded_file', filename=filename))
 
 	return render_template('upload.html')
 
