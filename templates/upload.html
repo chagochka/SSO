@@ -1,17 +1,24 @@
 {% extends "base.html" %}
-
+<title>Загрузка отчета</title>
 {% block content %}
     <div class="container">
         <h3>Загрузите отчёт</h3>
-        <form method=post enctype=multipart/form-data>
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" id="file" name="file">
-            <label class="custom-file-label" for="file">Выберите файл</label>
-        </div>
-        <button type="submit" class="btn btn-primary mt-3">
-            <i class="fas fa-upload"></i> Отправить
-        </button>
+        <form method="post" enctype="multipart/form-data">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="file" name="file">
+                <label class="custom-file-label" for="file" id="file-label">Выберите файл</label>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">
+                <i class="fas fa-upload"></i> Отправить
+            </button>
         </form>
         <p>{{ message }}</p>
     </div>
+
+    <script>
+        document.getElementById('file').addEventListener('change', function(e) {
+            var fileName = e.target.files[0].name;
+            document.getElementById('file-label').textContent = fileName;
+        });
+    </script>
 {% endblock %}

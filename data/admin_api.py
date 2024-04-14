@@ -1,3 +1,6 @@
+import configparser
+from collections import defaultdict
+from datetime import datetime
 from functools import wraps
 
 from flask import jsonify, make_response, Blueprint, current_app, render_template, request, redirect, url_for
@@ -11,6 +14,23 @@ blueprint = Blueprint(
 	__name__,
 	template_folder='templates'
 )
+
+month_names_ru = {
+	1: "Январь", 2: "Февраль", 3: "Март", 4: "Апрель", 5: "Май", 6: "Июнь", 7: "Июль", 8: "Август", 9: "Сентябрь",
+	10: "Октябрь", 11: "Ноябрь", 12: "Декабрь"
+}
+
+
+def group_deadlines_by_month(deadlines):
+	deadlines_by_month = defaultdict(list)
+	for deadline in deadlines:
+		deadline_date = datetime.strptime(deadline, '%Y-%m-%d')
+		month_year = month_names_ru[deadline_date.month] + " " + str(deadline_date.year)
+		deadlines_by_month[month_year].append(deadline)
+
+	return dict(
+		sorted(deadlines_by_month.items(), key=lambda item: list(month_names_ru.values()).index(item[0].split()[0]))
+	)
 
 
 def get_users():
@@ -92,4 +112,51 @@ def add_user():
 @blueprint.route('/admin/settings')
 @admin_required
 def settings():
-	return render_template('settings.html')
+	config = configparser.ConfigParser()
+	config.read('settings.ini')
+
+	deadlines = [config.get('deadlines', deadline) for deadline in config.options('deadlines')]
+	deadlines_by_month = group_deadlines_by_month(deadlines)
+
+	maxLinks = config.get('settings', 'maxLinks', fallback='20')
+	minLinks = config.get('settings', 'minLinks', fallback='30')
+
+	return render_template(
+		'settings.html',
+		deadlines=deadlines, deadlines_by_month=deadlines_by_month,
+		maxLinks=maxLinks, minLinks=minLinks
+	)
+
+
+@blueprint.route('/admin/update_settings', methods=['POST'])
+def update_settings():
+	deadlines = request.form.getlist('deadlines[]')
+	remove_deadline = request.form.getlist('remove_deadline')
+	maxLinks = request.form.get('maxLinks')
+	minLinks = request.form.get('minLinks')
+
+	config = configparser.ConfigParser()
+	config.add_section('deadlines')
+	config.add_section('settings')
+
+	config.set('settings', 'maxLinks', maxLinks)
+	config.set('settings', 'minLinks', minLinks)
+
+	added_dates = {}
+
+	if remove_deadline:
+		if config.has_option('deadlines', f'deadline{remove_deadline}'):
+			print(f'deadline{remove_deadline}')
+			config.remove_option('deadlines', f'deadline{remove_deadline}')
+			with open('settings.ini', 'w') as configfile:
+				config.write(configfile)
+
+	for i, deadline in enumerate(deadlines, start=1):
+		if deadline not in added_dates:
+			config.set('deadlines', f'deadline{i}', deadline)
+			added_dates[deadline] = True
+
+	with open('settings.ini', 'w') as configfile:
+		config.write(configfile)
+
+	return redirect(url_for('admin_api.settings'))

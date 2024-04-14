@@ -1,45 +1,50 @@
 {% extends "base.html" %}
-
+<title>Отчеты пользователя {{ user.name }}</title>
 {% block content %}
-<h1>{{user.name}}</h1>
-<table class="table">
-    <thead>
-    <tr>
-        <th>Дата</th>
-        <th>Время</th>
-        <th>Статус</th>
-        <th>Балл</th>
-        <th>Ссылка на скачивание</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for report in reports %}
-    <tr>
-        <td>
-            {{ report.date.split(' ')[0] }}
-        </td>
-        <td>
-            {{ report.date.split(' ')[1] }}
-        </td>
-        <td>
-            {{ report.status }}
-        </td>
-        <td>
-            {{ report.points }}
-        </td>
-        <td>
-            <a href="{{ url_for('uploaded_report', report_path=report.path) }}"><i
-                    class="fa-solid fa-file-arrow-down"></i></a>
-        </td>
-        <td>
-            <button id="btn_click">Выставить оценку</button>
-            <script>
-$('#btn_click').on('click', function() { window.location = 'http://localhost:5000/set_score/{{ report.id }}'; });  // не работает почему то
-            </script>
-        </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+    <h1>{{user.name}}</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Время</th>
+            <th>Статус</th>
+            <th>Балл</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for report in reports %}
+        <tr>
+            {% set date = report.date | string() %}
+            <td><a href="{{ url_for('uploaded_report', report_id=report.id) }}"><i class="fa-solid fa-file-arrow-down"></i></a>  {{ date.split(' ')[0] }}</td>
+            <td>{{ date.split(' ')[1] }}</td>
+            <form action="{{ url_for('update_report', report_id=report.id) }}" method="post" style="display: inline;">
+            <td>
+                {% if current_user.status == "admin" %}
+                    <select name="status">
+                            <option value="Не проверено" {% if report.status == "Не проверено" %}selected{% endif %}>Не проверено</option>
+                            <option value="Зачтено" {% if report.status == "Зачтено" %}selected{% endif %}>Зачтено</option>
+                            <option value="Незачтено" {% if report.status == "Незачтено" %}selected{% endif %}>Незачтено</option>
+                    </select>
+                {% else %}
+                    {{ report.status }}
+                {% endif %}
+            </td>
+            <td>
+                {% if current_user.status == "admin" %}
+                <input type="number" name="points" value="{{ report.points }}" style="width: 50px;">
+
+                {% else %}
+                    {{ report.points }}
+                {% endif %}
+            </td>
+                {% if current_user.status == "admin" %}
+                    <div class="fixed-bottom d-flex justify-content-end p-3">
+                        <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
+                    </div>
+                {% endif %}
+            </form>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
