@@ -55,7 +55,7 @@ def admin_required(f):
 @blueprint.route('/admin/dashboard')
 @admin_required
 def dashboard():
-	return render_template('admin_dashboard.html', users=get_users())
+	return render_template('admin_dashboard.html', users=get_users(), title='Панель администратора')
 
 
 @blueprint.route('/admin/users')
@@ -106,7 +106,7 @@ def add_user():
 		db_sess.commit()
 		return redirect('/admin/dashboard')
 
-	return render_template('add_user.html')
+	return render_template('add_user.html', title='Добавление студента')
 
 
 @blueprint.route('/admin/settings')
@@ -124,7 +124,7 @@ def settings():
 	return render_template(
 		'settings.html',
 		deadlines=deadlines, deadlines_by_month=deadlines_by_month,
-		maxLinks=maxLinks, minLinks=minLinks
+		maxLinks=maxLinks, minLinks=minLinks, title='Настройки'
 	)
 
 

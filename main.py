@@ -95,7 +95,7 @@ def uploaded_report(report_id):
 @app.route('/index')
 def index():
 	"""Корневая страница"""
-	return render_template('index.html')
+	return render_template('index.html', title='Главная')
 
 
 @login_required
@@ -141,9 +141,9 @@ def upload():
 			db.add(report)
 			db.commit()
 
-			return render_template('upload.html', message='Отчёт успешно отправлен')
+			return render_template('upload.html', message='Отчёт успешно отправлен', title='Загрузка отчёта')
 
-	return render_template('upload.html')
+	return render_template('upload.html', title='Загрузка отчёта')
 
 
 # URL http://localhost:5000/register
@@ -245,7 +245,7 @@ def search_user(user_login):
 	"""Страница пользователя"""
 	user = db.query(User).filter(User.email == user_login).first()
 	user_reports_list = user.reports
-	return render_template('user_account_form.html', user=user, reports=user_reports_list)
+	return render_template('user_account_form.html', user=user, reports=user_reports_list, title=f'Отчёты {user.name}')
 
 
 @app.route('/update_report/<int:report_id>', methods=['POST'])

@@ -18,7 +18,7 @@
 					{% else %}
 						<a class="btn btn-primary" href="/upload"><i class="fa-solid fa-file-arrow-up"></i> Загрузить отчёт</a>
 					{% endif %}
-					<div class="navbar-brand">{{current_user.name}} | {{current_user.status}}   <a href="/logout" class="text-decoration-none text-reset"><i class="fa-solid fa-right-from-bracket"></i></a></div>
+				<div class="navbar-brand"><a href="{{ url_for('search_user', user_login=current_user.email) }}">{{current_user.name}}</a> | {{current_user.status}}   <a href="/logout" class="text-decoration-none text-reset"><i class="fa-solid fa-right-from-bracket"></i></a></div>
 				{% else %}
 					<p>
 						<a class="btn btn-primary " href="/register">Зарегистрироваться</a>
