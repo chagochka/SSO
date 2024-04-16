@@ -1,4 +1,4 @@
 """Список моделей"""
 
 # noinspection PyUnresolvedReferences
-from . import users, register, login
+from . import users, register, login, reports

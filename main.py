@@ -9,7 +9,6 @@ from flask import (
 	render_template,
 	request,
 	make_response,
-	session,
 	jsonify,
 	send_from_directory, url_for
 )
@@ -184,36 +183,6 @@ def reqister():
 		title='Регистрация',
 		form=regform
 	)
-
-
-# URL http://localhost:5000/session_count_1
-@app.route('/session_count_1')
-def session_count_1():
-	"""Счётчик посещений страницы (способ cookie)"""
-	visits = request.cookies.get('visits_count', type=int)
-	if visits:
-		response = make_response(f'Количество посещений этой страницы: {visits + 1}')
-		response.set_cookie('visits_count', str(visits + 1), max_age=60 * 60 * 24 * 365 * 3)
-	else:
-		response = make_response('Здравствуйте! Вы пришли на эту страницу в первый раз, '
-		                         'или же заходили так давно, что мы о вас почти забыли;)')
-		response.set_cookie('visits_count', '1', max_age=60 * 60 * 24 * 365 * 3)
-	return response
-
-
-# URL http://localhost:5000/session_count_2
-@app.route('/session_count_2')
-def session_count_2():
-	"""Счётчик посещений страницы (способ session)"""
-	if 'visits_count' in session:
-		session['visits_count'] = session.get('visits_count') + 1
-		visits = session['visits_count']
-		response = make_response(f'Количество посещений этой страницы: {visits}')
-	else:
-		session['visits_count'] = 1
-		response = make_response('Здравствуйте! Вы пришли на эту страницу в первый раз, '
-		                         'или же заходили так давно, что мы о вас почти забыли;)')
-	return response
 
 
 # URL http://localhost:5000/login
