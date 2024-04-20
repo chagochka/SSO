@@ -35,7 +35,7 @@ def group_deadlines_by_month(deadlines):
 
 def get_users():
 	db_sess = db_session.create_session()
-	users = db_sess.query(User).filter(User.status == 'Учащийся')
+	users = db_sess.query(User).filter(User.status == 'Волонтёр')
 	return [user.to_dict() for user in users]
 
 
@@ -100,7 +100,7 @@ def add_user():
 		user.surname = surname
 		user.name = name
 		user.patronymic = patronymic
-		user.status = 'Учащийся'
+		user.status = 'Волонтёр'
 
 		db_sess.add(user)
 		db_sess.commit()
@@ -118,8 +118,8 @@ def settings():
 	deadlines = [config.get('deadlines', deadline) for deadline in config.options('deadlines')]
 	deadlines_by_month = group_deadlines_by_month(deadlines)
 
-	maxLinks = config.get('settings', 'maxLinks', fallback='20')
-	minLinks = config.get('settings', 'minLinks', fallback='30')
+	maxLinks = config.get('settings', 'maxLinks', fallback='30')
+	minLinks = config.get('settings', 'minLinks', fallback='10')
 
 	return render_template(
 		'settings.html',

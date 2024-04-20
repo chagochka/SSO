@@ -29,16 +29,14 @@
             {% endfor %}
         </div>
         <button type="button" class="btn btn-primary add-deadline">Добавить дедлайн</button>
-
-         <div class="form-group">
-            <label for="maxLinks">Максимум ссылок:</label>
-            <input type="number" class="form-control" id="maxLinks" name="maxLinks" value="{{ maxLinks }}" required>
-        </div>
         <div class="form-group">
             <label for="minLinks">Минимум ссылок:</label>
             <input type="number" class="form-control" id="minLinks" name="minLinks" value="{{ minLinks }}" required>
         </div>
-
+         <div class="form-group">
+            <label for="maxLinks">Максимум ссылок:</label>
+            <input type="number" class="form-control" id="maxLinks" name="maxLinks" value="{{ maxLinks }}" required>
+        </div>
         <button type="submit" class="btn btn-success">Сохранить</button>
     </form>
 </div>

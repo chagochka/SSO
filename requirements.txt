@@ -1,5 +1,9 @@
 python==3.7
+python-docx==1.1.0
 WTForms==3.0.1
 SQLAlchemy==2.0.28
 Werkzeug==2.2.3
 Flask==2.2.5
+Flask-RESTful==0.3.10
+Flask-Login==0.6.3
+Flask-WTF==1.2.1

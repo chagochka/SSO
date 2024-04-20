@@ -152,7 +152,7 @@ def reqister():
 	db = db_session.create_session()
 
 	regform = RegisterForm()
-	users = db.query(User).filter(User.status == 'Учащийся').all()
+	users = db.query(User).filter(User.status == 'Волонтёр').all()
 	regform.full_name.choices = [
 		(f'{user.surname} {user.name} {user.patronymic}', f'{user.surname} {user.name} {user.patronymic}') for user in
 		users if not user.email]
@@ -173,7 +173,7 @@ def reqister():
 		user = db.query(User).filter(and_(
 			User.surname == surname, User.name == name, User.patronymic == patronymic)).first()
 		user.email = regform.email.data
-		user.status = 'Учащийся'
+		user.status = 'Волонтёр'
 		user.about = regform.about.data
 		user.set_password(regform.password.data)
 		db.commit()
@@ -264,4 +264,5 @@ if __name__ == '__main__':
 	app.register_blueprint(admin_api.blueprint)
 	api.add_resource(ReportsList, '/api/reports')
 	api.add_resource(ReportResource, '/api/reports/<int:reports_id>')
-	app.run(host='localhost')
+	port = int(os.environ.get('PORT', 5000))
+	app.run(host='0.0.0.0', port=port)

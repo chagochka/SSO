@@ -19,7 +19,7 @@ class User(SqlAlchemyBase, UserMixin):
 	surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 	name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 	patronymic = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-	status = sqlalchemy.Column(sqlalchemy.Enum('Учащийся', 'admin'), nullable=False)
+	status = sqlalchemy.Column(sqlalchemy.Enum('Волонтёр', 'admin'), nullable=False)
 	about = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 	email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)
 	hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
