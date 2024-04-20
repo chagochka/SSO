@@ -87,6 +87,7 @@ def uploaded_report(report_id):
 	author = report.users
 
 	directory = os.path.join(app.config['UPLOAD_FOLDER'], f'{author.surname}-{author.name}')
+	print(f'{report.date.strftime("%Y-%m-%d-%H%M%S")}.docx')
 	return send_from_directory(directory, f'{report.date.strftime("%Y-%m-%d-%H%M%S")}.docx')
 
 
