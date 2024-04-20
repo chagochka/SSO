@@ -87,7 +87,7 @@ def uploaded_report(report_id):
 	author = report.users
 
 	directory = os.path.join(app.config['UPLOAD_FOLDER'], f'{author.surname}-{author.name}')
-	return send_from_directory(directory, f'{report.date.strftime("%Y-%m-%d %H-%M-%S")}.docx')
+	return send_from_directory(directory, f'{report.date.strftime("%Y-%m-%d-%H%M%S")}.docx')
 
 
 @app.route('/')
@@ -126,7 +126,7 @@ def upload():
 			            for deadline in deadlines]):
 				return render_template('upload.html', message='До дедлайна ещё далеко')
 
-			date = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+			date = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
 			tmp = os.path.join(f'{current_user.surname}-{current_user.name}', f'{date}.docx')
 			path = os.path.join(app.config['UPLOAD_FOLDER'], str(tmp))
 			file.save(path)
