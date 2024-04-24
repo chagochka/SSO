@@ -106,7 +106,7 @@ def add_user():
 		db_sess.commit()
 		return redirect('/admin/dashboard')
 
-	return render_template('add_user.html', title='Добавление студента')
+	return render_template('add_user.html', title='Добавление волонтёра')
 
 
 @blueprint.route('/admin/settings')

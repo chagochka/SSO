@@ -87,8 +87,7 @@ def uploaded_report(report_id):
 	author = report.users
 
 	directory = os.path.join(app.config['UPLOAD_FOLDER'], f'{author.surname}-{author.name}')
-	print(f'{report.date.strftime("%Y-%m-%d-%H%M%S")}.docx')
-	return send_from_directory(directory, f'{report.date.strftime("%Y-%m-%d-%H%M%S")}.docx')
+	return send_from_directory(directory, f'{report.date}.docx')
 
 
 @app.route('/')
@@ -136,6 +135,7 @@ def upload():
 			report = Report()
 			report.author_id = current_user.id
 			report.points = 0
+			report.date = date
 			report.status = 'Не проверено'
 			report.links = links
 			db.add(report)

@@ -1,6 +1,5 @@
 """Модель для работы с SQL-таблицей reports"""
 
-import datetime
 import sqlalchemy
 from sqlalchemy import orm
 from flask_login import UserMixin
@@ -18,7 +17,7 @@ class Report(SqlAlchemyBase, UserMixin):
     points = sqlalchemy.Column(sqlalchemy.Integer)
     status = sqlalchemy.Column(sqlalchemy.Text)
     links = sqlalchemy.Column(sqlalchemy.Integer)
-    date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
+    date = sqlalchemy.Column(sqlalchemy.String)
 
     users = orm.relationship('User', back_populates="reports")
 
